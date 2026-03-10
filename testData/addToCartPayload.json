@@ -1,0 +1,29 @@
+{
+    "cartPayLoad": {
+        "_id": "",
+        "product": {
+            "_id": "",
+            "productName": "ADIDAS ORIGINAL",
+            "productCategory": "electronics",
+            "productSubCategory": "mobiles",
+            "productPrice": 11500,
+            "productDescription": "Apple phone",
+            "productImage": "https://rahulshettyacademy.com/api/ecom/uploads/productImage_1767959265156.jpg",
+            "productRating": "0",
+            "productTotalOrders": "0",
+            "productStatus": true,
+            "productFor": "women",
+            "productAddedBy": "admin",
+            "__v": 0
+        }
+    },
+    "getOrderDet": {
+        "orders": [
+            ""
+        ],
+        "productOrderId": [
+            ""
+        ],
+        "message": "Order Placed Successfully"
+    }
+}

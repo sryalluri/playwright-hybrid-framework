@@ -1,0 +1,25 @@
+{
+    "createOrderPayload": {
+        "orders": [
+            {
+                "country": "India",
+                "productOrderedId": ""
+            }
+        ]
+    },
+    "orderDetails": {
+        "data": {
+            "_id": "",
+            "orderById": "",
+            "orderBy": "sr.yalluri@gmail.com",
+            "productOrderedId": "6960eae1c941646b7a8b3ed3",
+            "productName": "ADIDAS ORIGINAL",
+            "country": "India",
+            "productDescription": "Apple phone",
+            "productImage": "https://rahulshettyacademy.com/api/ecom/uploads/productImage_1767959265156.jpg",
+            "orderPrice": "11500",
+            "__v": 0
+        },
+        "message": "Orders fetched for customer Successfully"
+    }
+}
