@@ -19,7 +19,7 @@ export default defineConfig({
   use: {
     baseURL: 'https://rahulshettyacademy.com',
     storageState: 'storageState.json',
-    headless: false,
+    headless: !!process.env.CI,
     trace: 'on-first-retry',
   },
 
@@ -28,11 +28,11 @@ export default defineConfig({
       name: 'chromium',
       use: {
         channel: 'chrome',
-        viewport: null,
-        launchOptions: {
-          args: ['--start-maximized'],
-          slowMo: 500
-        }
+        // viewport: null,
+        // launchOptions: {
+        //   args: ['--start-maximized'],
+        //   slowMo: 500
+        // }
       },
     },
   ],
