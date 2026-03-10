@@ -4,10 +4,8 @@ import loginData from '../testData/loginData.json' assert { type: "json" };
 
 async function globalSetup() {
 
-  const isCI = !!process.env.CI;
-
   const browser = await chromium.launch({
-    headless: isCI, // 🔥 Headless in CI
+    headless: !!process.env.CI
   });
 
   const page = await browser.newPage();
