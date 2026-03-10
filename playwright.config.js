@@ -1,17 +1,7 @@
-// @ts-check
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const isCI = !!process.env.CI;
 
-/**
- * @see https://playwright.dev/docs/test-configuration
- */
 export default defineConfig({
   testDir: './tests',
   globalSetup: './utils/global-setup.js',
@@ -19,17 +9,25 @@ export default defineConfig({
   use: {
     baseURL: 'https://rahulshettyacademy.com',
     storageState: 'storageState.json',
-    headless: !!process.env.CI,
+    headless: isCI,                // headless in CI, headed locally
     trace: 'on-first-retry',
+    viewport: isCI ? undefined : null,   // maximize only locally
   },
 
   projects: [
     {
       name: 'chromium',
       use: {
-        ...devices['Desktop Chrome'],
+        ...(isCI
+          ? {}  // CI → default bundled chromium
+          : {
+              channel: 'chrome',
+              launchOptions: {
+                args: ['--start-maximized'],
+                slowMo: 500
+              }
+            }),
       },
     },
   ],
 });
-

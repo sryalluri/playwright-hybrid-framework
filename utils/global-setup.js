@@ -1,14 +1,11 @@
 // global-setup.js
 import { chromium } from '@playwright/test';
+//import loginData from './testData/loginData.json' assert { type: "json" };
 import loginData from '../testData/loginData.json' assert { type: "json" };
 
 async function globalSetup() {
-
-  const browser = await chromium.launch({
-    headless: !!process.env.CI
-  });
-
-  const page = await browser.newPage();
+  const browser = await chromium.launch();
+ const page = await browser.newPage();
 
   await page.goto('https://rahulshettyacademy.com/client/#/auth/login');
 
