@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 import { ENV } from './config/env.js';
 
 const isCI = !!process.env.CI;
@@ -13,7 +13,7 @@ export default defineConfig({
 
   globalSetup: require.resolve('./utils/global-setup.js'),
 
-  fullyParallel: false,          // safer for hybrid API+UI flows
+  fullyParallel: false,
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
   reporter: isCI ? 'dot' : 'html',
@@ -22,31 +22,27 @@ export default defineConfig({
     baseURL: ENV.API_BASE_URL,
     storageState: 'storageState.json',
 
-    headless: isCI,                 // Headless in CI
+    headless: isCI,                 // headless in CI only
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
 
-    // Maximize locally only
+    // 🔥 Critical fix
     viewport: isCI ? { width: 1280, height: 720 } : null,
   },
 
   projects: [
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-
-        ...(isCI
-          ? {}   // CI → default bundled Chromium
-          : {
-              channel: 'chrome',
-              launchOptions: {
-                args: ['--start-maximized'],
-                slowMo: 500
-              }
-            }),
-      },
+      use: isCI
+        ? {} // CI → default bundled chromium
+        : {
+            channel: 'chrome',
+            launchOptions: {
+              args: ['--start-maximized'],
+              slowMo: 500
+            }
+          }
     },
   ],
 });

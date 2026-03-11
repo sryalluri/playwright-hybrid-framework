@@ -1,155 +1,145 @@
 import { test, expect } from '../../fixtures/test.fixture.js';
 import { APIUtils } from '../../utils/APIUtils.js';
 import productPayload from '../../testData/productPayload.json';
-import loginData from '../../testData/loginData.json' assert { type: "json" };
 import addToCartPayload from '../../testData/addToCartPayload.json';
 import orderPayload from '../../testData/orderPayload.json';
 import { Logger } from '../../utils/logger.js';
 
-
-
 test.describe('Hybrid - Add To Cart Flow', () => {
 
-    test('Add product via API and validate in UI', async ({ page, request, authData }) => {
+  test('Add product via API and validate in UI', async ({ page, request, authData }) => {
 
-        // -----------------------------------------
-        // Step 1: Extract auth data from fixture
-        // -----------------------------------------
-        const { token, userId } = authData;
+    const { token, userId } = authData;
+    const apiUtils = new APIUtils(request);
+    const productName = "ADIDAS ORIGINAL";
 
-        console.log("Token:", token);
-        console.log("UserId:", userId);
+    let productId;
+    let orderId;
 
-        const apiUtils = new APIUtils(request);
+    // ================================
+    await test.step('Step 1: Get Product ID via API', async () => {
+      productId = await apiUtils.getProductId(
+        token,
+        productPayload,
+        productName
+      );
 
-        // -----------------------------------------
-        // Step 2: Get Product ID from API
-        // -----------------------------------------
-        const productName = "ADIDAS ORIGINAL";
-
-        const productId = await apiUtils.getProductId(
-            token,
-            productPayload,
-            productName
-        );
-
-        console.log("ProductId:", productId);
-
-        // -----------------------------------------
-        // Step 3: Add Product to Cart via API
-        // -----------------------------------------
-        const cartResponse = await apiUtils.addToCart(
-            token,
-            userId,
-            productId,
-            addToCartPayload.cartPayLoad
-        );
-
-        expect(cartResponse.message).toBe("Product Added To Cart");
-
-        // -----------------------------------------
-        // Step 4: Navigate to Dashboard (UI)
-        // -----------------------------------------
-        await page.goto('https://rahulshettyacademy.com/client/#/dashboard/dash');
-
-        await expect(page).toHaveURL(/#\/dashboard/);
-
-        await page.locator("//button[@routerlink='/dashboard/myorders']").click();
-
-        await clearAllOrders(page);
-        // -----------------------------------------
-        // Step 5: Go to Cart
-        // -----------------------------------------
-        await page.locator("//button[@routerlink='/dashboard/myorders']/parent::li/following-sibling::li/button[@routerlink='/dashboard/cart']").click();
-
-        // -----------------------------------------
-        // Step 6: Validate Product in Cart
-        // -----------------------------------------
-        const productLocator = page.getByText(productName);
-
-        await expect(productLocator).toBeVisible({ timeout: 10000 });
-
-        console.log("Product successfully validated in UI.");
-
-        const text = await productLocator.textContent();
-        console.log("Product Title:", text);
-        await expect(productLocator).toHaveText("ADIDAS ORIGINAL");
-
-        // -----------------------------------------
-        // Step 7: Create Order
-        // -----------------------------------------
-        const orderResponse = await apiUtils.createOrder(
-            token,
-            productId,
-            orderPayload.createOrderPayload
-        );
-
-        expect(orderResponse.message).toBe(addToCartPayload.getOrderDet.message);
-
-        const orderId = orderResponse.orders[0];
-        console.log("Created Order ID:", orderId);
-
-        // -----------------------------------------
-        // Step 8: Go to Orders
-        // -----------------------------------------
-        await page.locator("//button[@routerlink='/dashboard/myorders']").click();
-
-        // -----------------------------------------
-        // Step 9: Validate Product in Cart
-        // -----------------------------------------
-        const headerLocator = page.locator("//td[contains(text(),'ADIDAS ORIGINAL')]/preceding-sibling::th");
-
-        // Get the text value
-        const headerValue = await headerLocator.textContent();
-
-        console.log(`The value is: ${headerValue}`);
-
-        expect(headerValue.trim()).toBe(orderId);
-
-        // -----------------------------------------
-        // Step 10: Get Order Details
-        // -----------------------------------------
-        const orderDetails = await apiUtils.getOrderDetails(
-            token,
-            orderId
-        );
-
-        expect(orderDetails.message).toBe("Orders fetched for customer Successfully");
-
-        const orderBY = orderDetails.data.orderBy;
-        console.log("Created Order By:", orderBY);
-        expect(orderBY).toBe(orderPayload.orderDetails.data.orderBy);
-
-        // -----------------------------------------
-        // Step 11: Delete Order Details
-        // -----------------------------------------
-        const deleteDetails = await apiUtils.deleteOrder(
-            token,
-            orderId,
-            productId,
-            orderPayload.createOrderPayload
-        );
-
-        expect(deleteDetails.message).toBe("Orders Deleted Successfully");
+      Logger.info(`Product ID: ${productId}`);
+      expect(productId).toBeTruthy();
     });
 
-    async function clearAllOrders(page) {
+    // ================================
+    await test.step('Step 2: Add Product To Cart via API', async () => {
+      const cartResponse = await apiUtils.addToCart(
+        token,
+        userId,
+        productId,
+        addToCartPayload.cartPayLoad
+      );
 
-        const deleteLocator = page.locator("//button[contains(text(),'Delete')]");
+      Logger.info(`Cart Response: ${JSON.stringify(cartResponse)}`);
+      expect(cartResponse.message).toBe("Product Added To Cart");
+    });
 
-        let count = await deleteLocator.count();
-        console.log("Initial Order Count:", count);
+    // ================================
+    await test.step('Step 3: Navigate to Dashboard', async () => {
+      await page.goto('/client/#/dashboard/dash');
+      await expect(page).toHaveURL(/#\/dashboard/);
+    });
 
-        while (count > 0) {
+    // ================================
+    await test.step('Step 4: Clear Existing Orders', async () => {
+      await page.locator("//button[@routerlink='/dashboard/myorders']").click();
+      await clearAllOrders(page);
+    });
 
-            await deleteLocator.first().click();
+    // ================================
+    await test.step('Step 5: Validate Product in Cart (UI)', async () => {
+      await page.locator("//button[@routerlink='/dashboard/myorders']/parent::li/following-sibling::li/button[@routerlink='/dashboard/cart']").click();
 
-            // Wait until count decreases
-            await expect(deleteLocator).toHaveCount(count - 1, { timeout: 10000 });
+      const productLocator = page.getByText(productName);
+      await expect(productLocator).toBeVisible({ timeout: 10000 });
+      await expect(productLocator).toHaveText(productName);
 
-            count = await deleteLocator.count();
-            console.log("Remaining Orders:", count);
-        }
+      Logger.info("Product validated successfully in UI cart.");
+    });
+
+    // ================================
+    await test.step('Step 6: Create Order via API', async () => {
+      const orderResponse = await apiUtils.createOrder(
+        token,
+        productId,
+        orderPayload.createOrderPayload
+      );
+
+      expect(orderResponse.message).toBe(addToCartPayload.getOrderDet.message);
+
+      orderId = orderResponse.orders[0];
+      Logger.info(`Order Created: ${orderId}`);
+      expect(orderId).toBeTruthy();
+    });
+
+    // ================================
+    await test.step('Step 7: Validate Order ID in UI', async () => {
+      await page.locator("//button[@routerlink='/dashboard/myorders']").click();
+
+      const headerLocator = page.locator(
+        `//td[contains(text(),'${productName}')]/preceding-sibling::th`
+      );
+
+      const headerValue = (await headerLocator.textContent()).trim();
+      Logger.info(`Order ID from UI: ${headerValue}`);
+
+      expect(headerValue).toBe(orderId);
+    });
+
+    // ================================
+    await test.step('Step 8: Get Order Details via API', async () => {
+      const orderDetails = await apiUtils.getOrderDetails(token, orderId);
+
+      expect(orderDetails.message)
+        .toBe("Orders fetched for customer Successfully");
+
+      const orderBy = orderDetails.data.orderBy;
+      Logger.info(`Order created by: ${orderBy}`);
+
+      expect(orderBy).toBe(orderPayload.orderDetails.data.orderBy);
+    });
+
+    // ================================
+    await test.step('Step 9: Delete Order via API', async () => {
+      const deleteDetails = await apiUtils.deleteOrder(
+        token,
+        orderId,
+        productId,
+        orderPayload.createOrderPayload
+      );
+
+      expect(deleteDetails.message)
+        .toBe("Orders Deleted Successfully");
+
+      Logger.info("Order deleted successfully.");
+    });
+
+  });
+
+
+  // ==========================================
+  // Utility: Clear Orders in UI
+  // ==========================================
+  async function clearAllOrders(page) {
+
+    const deleteLocator = page.locator("//button[contains(text(),'Delete')]");
+    let count = await deleteLocator.count();
+
+    Logger.info(`Initial Order Count: ${count}`);
+
+    while (count > 0) {
+      await deleteLocator.first().click();
+      await expect(deleteLocator).toHaveCount(count - 1, { timeout: 10000 });
+      count = await deleteLocator.count();
+      Logger.info(`Remaining Orders: ${count}`);
     }
+  }
 
 });
