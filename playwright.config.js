@@ -1,27 +1,44 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import { ENV } from './config/env.js';
 
 const isCI = !!process.env.CI;
 
+// 🔒 Fail fast if base URL missing
+if (!ENV.API_BASE_URL) {
+  throw new Error("❌ API_BASE_URL is not defined. Check your environment variables.");
+}
+
 export default defineConfig({
   testDir: './tests',
-  globalSetup: './utils/global-setup.js',
+
+  globalSetup: require.resolve('./utils/global-setup.js'),
+
+  fullyParallel: false,          // safer for hybrid API+UI flows
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
+  reporter: isCI ? 'dot' : 'html',
 
   use: {
-    //baseURL: 'https://rahulshettyacademy.com',
+    baseURL: ENV.API_BASE_URL,
     storageState: 'storageState.json',
-    baseURL: ENV.UI_BASE_URL,
-    headless: isCI,                // headless in CI, headed locally
+
+    headless: isCI,                 // Headless in CI
     trace: 'on-first-retry',
-    viewport: isCI ? undefined : null,   // maximize only locally
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+
+    // Maximize locally only
+    viewport: isCI ? { width: 1280, height: 720 } : null,
   },
 
   projects: [
     {
       name: 'chromium',
       use: {
+        ...devices['Desktop Chrome'],
+
         ...(isCI
-          ? {}  // CI → default bundled chromium
+          ? {}   // CI → default bundled Chromium
           : {
               channel: 'chrome',
               launchOptions: {

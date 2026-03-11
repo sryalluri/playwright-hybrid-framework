@@ -30,7 +30,8 @@ jobs:
       # If manual run → use selected env
       # Otherwise default to qa
       TEST_ENV: ${{ github.event.inputs.environment || 'qa' }}
-
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      
     steps:
       - uses: actions/checkout@v4
 
