@@ -3,6 +3,8 @@ import { chromium } from '@playwright/test';
 //import loginData from './testData/loginData.json' assert { type: "json" };
 import loginData from '../testData/loginData.json' assert { type: "json" };
 
+
+
 async function globalSetup() {
   const browser = await chromium.launch();
  const page = await browser.newPage();

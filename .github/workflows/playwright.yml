@@ -1,20 +1,46 @@
 name: Playwright Tests
 
 on:
+  # 🔹 Automatic trigger on push
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
+
+  # 🔹 Automatic trigger on PR
   pull_request:
+    branches: [ main ]
+
+  # 🔹 Manual trigger with environment dropdown
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select Environment'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      # If manual run → use selected env
+      # Otherwise default to qa
+      TEST_ENV: ${{ github.event.inputs.environment || 'qa' }}
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - run: npm ci
+
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+
+      - name: Run Playwright Tests
+        run: npx playwright test

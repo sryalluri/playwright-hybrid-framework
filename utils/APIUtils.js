@@ -1,8 +1,11 @@
+import { ENV } from '../config/env.js';
+
+
 export class APIUtils {
 
     constructor(request) {
         this.request = request;
-        //this.loginPayload = loginPayload;
+       // this.baseURL = ENV.API_BASE_URL;
     }
 
     //   async getToken() {
@@ -23,7 +26,7 @@ export class APIUtils {
     async getProductId(token, productPayload, productName) {
 
         const response = await this.request.post(
-            "https://rahulshettyacademy.com/api/ecom/product/get-all-products",
+            `${ENV.API_BASE_URL}/api/ecom/product/get-all-products`,
             {
                 headers: {
                     Authorization: token
@@ -53,7 +56,7 @@ export class APIUtils {
         //console.log("Final Payload:", JSON.stringify(payload));
 
         const response = await this.request.post(
-            "https://rahulshettyacademy.com/api/ecom/user/add-to-cart",
+            `${ENV.API_BASE_URL}/api/ecom/user/add-to-cart`,
             {
                 headers: {
                     Authorization: token,
@@ -87,7 +90,7 @@ export class APIUtils {
         console.log("Order Final Payload:", JSON.stringify(payload));
 
         const response = await this.request.post(
-            "https://rahulshettyacademy.com/api/ecom/order/create-order",
+            `${ENV.API_BASE_URL}/api/ecom/order/create-order`,
             {
                 headers: {
                     Authorization: token,
@@ -114,7 +117,7 @@ export class APIUtils {
     async getOrderDetails(token, orderId) {
 
         const response = await this.request.get(
-            `https://rahulshettyacademy.com/api/ecom/order/get-orders-details?id=${orderId}`,
+            `${ENV.API_BASE_URL}/api/ecom/order/get-orders-details?id=${orderId}`,
             {
                 headers: {
                     Authorization: token,
@@ -147,7 +150,7 @@ export class APIUtils {
         console.log("Order Final Payload:", JSON.stringify(payload));
 
         const response = await this.request.delete(
-            `https://rahulshettyacademy.com/api/ecom/order/delete-order/${orderId}`,
+            `${ENV.API_BASE_URL}/api/ecom/order/delete-order/${orderId}`,
             {
                 headers: {
                     Authorization: token,

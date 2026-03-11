@@ -4,6 +4,6 @@ node_modules/
 playwright-report/
 test-results/
 storageState.json
-.env
+.env.*
 allure-results/
 dist/

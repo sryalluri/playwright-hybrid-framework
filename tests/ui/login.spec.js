@@ -4,6 +4,7 @@ import productPayload from '../../testData/productPayload.json';
 import loginData from '../../testData/loginData.json' assert { type: "json" };
 import addToCartPayload from '../../testData/addToCartPayload.json';
 import orderPayload from '../../testData/orderPayload.json';
+import { Logger } from '../../utils/logger.js';
 
 
 

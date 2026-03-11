@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import { ENV } from './config/env.js';
 
 const isCI = !!process.env.CI;
 
@@ -7,8 +8,9 @@ export default defineConfig({
   globalSetup: './utils/global-setup.js',
 
   use: {
-    baseURL: 'https://rahulshettyacademy.com',
+    //baseURL: 'https://rahulshettyacademy.com',
     storageState: 'storageState.json',
+    baseURL: ENV.UI_BASE_URL,
     headless: isCI,                // headless in CI, headed locally
     trace: 'on-first-retry',
     viewport: isCI ? undefined : null,   // maximize only locally
