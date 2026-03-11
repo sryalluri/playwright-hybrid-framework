@@ -1,5 +1,9 @@
 import { test, expect } from '../../fixtures/test.fixture.js';
 import { APIUtils } from '../../utils/APIUtils.js';
+import { DashboardPage } from '../../pages/DashboardPage.js';
+
+import { CartPage } from '../../pages/CartPage.js';
+import { OrderPage } from '../../pages/OrderPage.js';
 import productPayload from '../../testData/productPayload.json';
 import addToCartPayload from '../../testData/addToCartPayload.json';
 import orderPayload from '../../testData/orderPayload.json';
@@ -10,14 +14,19 @@ test.describe('Hybrid - Add To Cart Flow', () => {
   test('Add product via API and validate in UI', async ({ page, request, authData }) => {
 
     const { token, userId } = authData;
+
     const apiUtils = new APIUtils(request);
+    const dashboard = new DashboardPage(page);
+    const ordersPage = new OrderPage(page);
+    const cartPage = new CartPage(page);
+
     const productName = "ADIDAS ORIGINAL";
 
     let productId;
     let orderId;
 
     // ================================
-    await test.step('Step 1: Get Product ID via API', async () => {
+    await test.step('Step 1: Fetch Product ID via API', async () => {
       productId = await apiUtils.getProductId(
         token,
         productPayload,
@@ -43,25 +52,22 @@ test.describe('Hybrid - Add To Cart Flow', () => {
 
     // ================================
     await test.step('Step 3: Navigate to Dashboard', async () => {
-      await page.goto('/client/#/dashboard/dash');
+      await dashboard.gotoDashboard();
       await expect(page).toHaveURL(/#\/dashboard/);
     });
 
     // ================================
-    await test.step('Step 4: Clear Existing Orders', async () => {
-      await page.locator("//button[@routerlink='/dashboard/myorders']").click();
-      await clearAllOrders(page);
+    await test.step('Step 4: Clear Existing Orders from UI', async () => {
+      await dashboard.goToOrders();
+      await ordersPage.clearAllOrders();
     });
 
     // ================================
     await test.step('Step 5: Validate Product in Cart (UI)', async () => {
-      await page.locator("//button[@routerlink='/dashboard/myorders']/parent::li/following-sibling::li/button[@routerlink='/dashboard/cart']").click();
+      await dashboard.goToCart();
+      await cartPage.validateProduct(productName);
 
-      const productLocator = page.getByText(productName);
-      await expect(productLocator).toBeVisible({ timeout: 10000 });
-      await expect(productLocator).toHaveText(productName);
-
-      Logger.info("Product validated successfully in UI cart.");
+      Logger.info("Product validated in cart UI.");
     });
 
     // ================================
@@ -72,7 +78,8 @@ test.describe('Hybrid - Add To Cart Flow', () => {
         orderPayload.createOrderPayload
       );
 
-      expect(orderResponse.message).toBe(addToCartPayload.getOrderDet.message);
+      expect(orderResponse.message)
+        .toBe(addToCartPayload.getOrderDet.message);
 
       orderId = orderResponse.orders[0];
       Logger.info(`Order Created: ${orderId}`);
@@ -81,21 +88,19 @@ test.describe('Hybrid - Add To Cart Flow', () => {
 
     // ================================
     await test.step('Step 7: Validate Order ID in UI', async () => {
-      await page.locator("//button[@routerlink='/dashboard/myorders']").click();
+      await dashboard.goToOrders();
 
-      const headerLocator = page.locator(
-        `//td[contains(text(),'${productName}')]/preceding-sibling::th`
-      );
+      const uiOrderId =
+        await ordersPage.getOrderIdForProduct(productName);
 
-      const headerValue = (await headerLocator.textContent()).trim();
-      Logger.info(`Order ID from UI: ${headerValue}`);
-
-      expect(headerValue).toBe(orderId);
+      Logger.info(`Order ID from UI: ${uiOrderId}`);
+      expect(uiOrderId).toBe(orderId);
     });
 
     // ================================
-    await test.step('Step 8: Get Order Details via API', async () => {
-      const orderDetails = await apiUtils.getOrderDetails(token, orderId);
+    await test.step('Step 8: Fetch Order Details via API', async () => {
+      const orderDetails =
+        await apiUtils.getOrderDetails(token, orderId);
 
       expect(orderDetails.message)
         .toBe("Orders fetched for customer Successfully");
@@ -103,7 +108,8 @@ test.describe('Hybrid - Add To Cart Flow', () => {
       const orderBy = orderDetails.data.orderBy;
       Logger.info(`Order created by: ${orderBy}`);
 
-      expect(orderBy).toBe(orderPayload.orderDetails.data.orderBy);
+      expect(orderBy)
+        .toBe(orderPayload.orderDetails.data.orderBy);
     });
 
     // ================================
@@ -122,24 +128,5 @@ test.describe('Hybrid - Add To Cart Flow', () => {
     });
 
   });
-
-
-  // ==========================================
-  // Utility: Clear Orders in UI
-  // ==========================================
-  async function clearAllOrders(page) {
-
-    const deleteLocator = page.locator("//button[contains(text(),'Delete')]");
-    let count = await deleteLocator.count();
-
-    Logger.info(`Initial Order Count: ${count}`);
-
-    while (count > 0) {
-      await deleteLocator.first().click();
-      await expect(deleteLocator).toHaveCount(count - 1, { timeout: 10000 });
-      count = await deleteLocator.count();
-      Logger.info(`Remaining Orders: ${count}`);
-    }
-  }
 
 });

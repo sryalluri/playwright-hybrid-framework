@@ -5,23 +5,7 @@ export class APIUtils {
 
     constructor(request) {
         this.request = request;
-       // this.baseURL = ENV.API_BASE_URL;
     }
-
-    //   async getToken() {
-
-    //     const response = await this.request.post(
-    //       "https://rahulshettyacademy.com/api/ecom/auth/login",
-    //       { data: this.loginPayload }
-    //     );
-
-    //     const responseBody = await response.json();
-
-    //     return {
-    //       token: responseBody.token,
-    //       userId: responseBody.userId
-    //     };
-    //   }
 
     async getProductId(token, productPayload, productName) {
 

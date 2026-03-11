@@ -4,16 +4,7 @@ import loginData from '../testData/loginData.json' assert { type: "json" };
 import { ENV } from '../config/env.js';
 
 export const apiFixtures = {
-    //   authData: async ({ request }, use) => {
-
-    //     // const authAPI = new AuthAPI(request);
-    //     // const authData = await authAPI.getToken(loginData);
-
-
-
-    //     await use(authData);
-
-    //   }
+    
     authData: async ({ request }, use) => {
         const response = await request.post(`${ENV.API_BASE_URL}/api/ecom/auth/login`, {
             data: loginData
