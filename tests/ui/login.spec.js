@@ -95,6 +95,34 @@ test.describe('Hybrid - Add To Cart Flow', () => {
 
         });
 
+        // ================================
+        await test.step('Step 8: Get Order Details via API', async () => {
+            const orderDetails = await apiUtils.getOrderDetails(token, orderId);
+
+            expect(orderDetails.message)
+                .toBe("Orders fetched for customer Successfully");
+
+            const orderBy = orderDetails.data.orderBy;
+            Logger.info(`Order created by: ${orderBy}`);
+
+            expect(orderBy).toBe(orderPayload.orderDetails.data.orderBy);
+        });
+
+        // ================================
+        await test.step('Step 9: Delete Order via API', async () => {
+            const deleteDetails = await apiUtils.deleteOrder(
+                token,
+                orderId,
+                productId,
+                orderPayload.createOrderPayload
+            );
+
+            expect(deleteDetails.message)
+                .toBe("Orders Deleted Successfully");
+
+            Logger.info("Order deleted successfully.");
+        });
+
     });
 
 });
