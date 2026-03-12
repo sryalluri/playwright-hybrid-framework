@@ -8,6 +8,7 @@ import productPayload from '../../testData/productPayload.json';
 import addToCartPayload from '../../testData/addToCartPayload.json';
 import orderPayload from '../../testData/orderPayload.json';
 import { Logger } from '../../utils/logger.js';
+import { allure } from 'allure-playwright';
 
 test.describe('Hybrid - Add To Cart Flow', () => {
 

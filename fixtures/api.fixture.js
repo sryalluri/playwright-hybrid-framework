@@ -2,8 +2,10 @@
 import { APIUtils } from '../utils/APIUtils.js';
 import loginData from '../testData/loginData.json' assert { type: "json" };
 import { ENV } from '../config/env.js';
+import { attachment } from "allure-js-commons";
 
 export const apiFixtures = {
+
 
     authData: async ({ request }, use) => {
         const response = await request.post(`${ENV.API_BASE_URL}/api/ecom/auth/login`, {
@@ -16,7 +18,11 @@ export const apiFixtures = {
         }
 
         const responseBody = await response.json();
-
+        attachment(
+            "API Response",
+            JSON.stringify(responseBody, null, 2),
+            "application/json"
+        );
         console.log("Login Response:", JSON.stringify(responseBody, null, 2));
 
         const authData = {

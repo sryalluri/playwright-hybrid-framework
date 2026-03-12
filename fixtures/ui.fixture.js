@@ -2,6 +2,7 @@ import { LoginPage } from '../pages/LoginPage.js';
 import { DashboardPage } from '../pages/DashboardPage.js';
 import { OrderPage } from '../pages/OrderPage.js';
 import { CartPage } from '../pages/CartPage.js';
+import { attachment } from "allure-js-commons";
 
 export const uiFixtures = {
 
