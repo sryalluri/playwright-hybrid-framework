@@ -12,8 +12,8 @@ import { Logger } from '../../utils/logger.js';
 test.describe('Hybrid - Add To Cart Flow', () => {
 
     test('Add product via API and validate in UI', async ({
-        request,
         authData,
+        apiUtils,
         dashboardPage,
         OrderPage,
         cartPage
@@ -21,7 +21,7 @@ test.describe('Hybrid - Add To Cart Flow', () => {
 
         const { token, userId } = authData;
 
-        const apiUtils = new APIUtils(request);
+        //const apiUtils = new APIUtils(request);
 
         const productName = "ADIDAS ORIGINAL";
 
