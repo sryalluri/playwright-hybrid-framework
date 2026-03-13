@@ -1,19 +1,15 @@
 name: Playwright Tests
 
 on:
-  # 🔹 Automatic trigger on push
   push:
     branches: [ main, dev ]
 
-  # 🔹 Automatic trigger on PR
   pull_request:
     branches: [ main ]
 
-  # 🔹 Nightly execution (12:00 AM IST)
   schedule:
     - cron: "30 18 * * *"
 
-  # 🔹 Manual trigger with environment dropdown
   workflow_dispatch:
     inputs:
       environment:
@@ -52,42 +48,83 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test
 
-      # Generate Allure Report
       - name: Generate Allure Report
         run: npx allure generate allure-results --clean -o allure-report
 
-      # Zip the report
-      - name: Zip Allure Report
-        run: zip -r allure-report.zip allure-report
+      - name: Extract Test Summary
+        id: results
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          SUMMARY=$(cat allure-report/widgets/summary.json)
 
-      # Upload report artifact to GitHub
+          TOTAL=$(echo $SUMMARY | jq '.statistic.total')
+          PASSED=$(echo $SUMMARY | jq '.statistic.passed')
+          FAILED=$(echo $SUMMARY | jq '.statistic.failed')
+
+          if [ "$FAILED" -gt 0 ]; then
+            STATUS="FAILED"
+          else
+            STATUS="PASSED"
+          fi
+
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Deploy Allure Report
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+
       - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
-      # -------------------------------
-      # Email step (temporarily disabled)
-      # -------------------------------
+      - name: Send Execution Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
 
-      # - name: Send Email with Report
-      #   uses: dawidd6/action-send-mail@v3
-      #   with:
-      #     server_address: smtp.gmail.com
-      #     server_port: 465
-      #     secure: true
-      #     username: ${{ secrets.EMAIL_USERNAME }}
-      #     password: ${{ secrets.EMAIL_PASSWORD }}
-      #     subject: Nightly Playwright Test Report
-      #     to: sr.yalluri@gmail.com
-      #     from: Playwright Automation
-      #     body: |
-      #       Nightly Playwright execution completed.
-      #
-      #       Environment: ${{ env.TEST_ENV }}
-      #
-      #       GitHub Run:
-      #       https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      #
-      #     attachments: allure-report.zip
+          subject: "[${{ env.TEST_ENV }}] Playwright Automation - ${{ steps.results.outputs.status }}"
+
+          to: sr.yalluri@gmail.com
+          from: Playwright Automation
+
+          html_body: |
+            <h2>Playwright Test Execution Report</h2>
+
+            <p><b>Environment:</b> ${{ env.TEST_ENV }}</p>
+
+            <table border="1" cellpadding="8">
+              <tr>
+                <th>Total</th>
+                <th style="color:green;">Passed</th>
+                <th style="color:red;">Failed</th>
+              </tr>
+              <tr>
+                <td>${{ steps.results.outputs.total }}</td>
+                <td>${{ steps.results.outputs.passed }}</td>
+                <td>${{ steps.results.outputs.failed }}</td>
+              </tr>
+            </table>
+
+            <br>
+
+            <p>
+            <b>Allure Report:</b><br>
+            https://sryalluri.github.io/playwright-hybrid-framework/
+            </p>
+
+            <p>
+            <b>GitHub Run:</b><br>
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            </p>
