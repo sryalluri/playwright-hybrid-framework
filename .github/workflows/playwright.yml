@@ -1,7 +1,7 @@
 name: Playwright Tests
 permissions:
   contents: write
-  
+
 on:
   push:
     branches: [ main, dev ]
@@ -10,7 +10,7 @@ on:
     branches: [ main ]
 
   schedule:
-    - cron: "30 18 * * *"
+    - cron: "30 3 * * *"
 
   workflow_dispatch:
     inputs:
