@@ -22,7 +22,7 @@ export class OrderPage {
       Logger.info(`Remaining Orders: ${count}`);
     }
   }
-
+  
   async getOrderIdForProduct(productName) {
     const locator = this.page.locator(
       `//td[contains(text(),'${productName}')]/preceding-sibling::th`
