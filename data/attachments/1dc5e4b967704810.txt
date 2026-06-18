@@ -1,25 +1,25 @@
 Login Response: {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OThjMjgzODQ4ZDYyMDY0YjJmYzVlZDQiLCJ1c2VyRW1haWwiOiJzci55YWxsdXJpQGdtYWlsLmNvbSIsInVzZXJNb2JpbGUiOjg5NzgwMDgxODYsInVzZXJSb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODE2ODU2NTQsImV4cCI6MTgxMzI0MzI1NH0.cNSAeD77XdUy5Np4xc7rdlgK9zaB0hJ4OwqpRqoN1T0",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OThjMjgzODQ4ZDYyMDY0YjJmYzVlZDQiLCJ1c2VyRW1haWwiOiJzci55YWxsdXJpQGdtYWlsLmNvbSIsInVzZXJNb2JpbGUiOjg5NzgwMDgxODYsInVzZXJSb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODE3NzEwNDksImV4cCI6MTgxMzMyODY0OX0.fLvU_qsDOqLMQTbXPrLpAP7aDHS8kDrbbOkoXLRS4j4",
   "userId": "698c283848d62064b2fc5ed4",
   "message": "Login Successfully"
 }
-Generated Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OThjMjgzODQ4ZDYyMDY0YjJmYzVlZDQiLCJ1c2VyRW1haWwiOiJzci55YWxsdXJpQGdtYWlsLmNvbSIsInVzZXJNb2JpbGUiOjg5NzgwMDgxODYsInVzZXJSb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODE2ODU2NTQsImV4cCI6MTgxMzI0MzI1NH0.cNSAeD77XdUy5Np4xc7rdlgK9zaB0hJ4OwqpRqoN1T0
+Generated Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OThjMjgzODQ4ZDYyMDY0YjJmYzVlZDQiLCJ1c2VyRW1haWwiOiJzci55YWxsdXJpQGdtYWlsLmNvbSIsInVzZXJNb2JpbGUiOjg5NzgwMDgxODYsInVzZXJSb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODE3NzEwNDksImV4cCI6MTgxMzMyODY0OX0.fLvU_qsDOqLMQTbXPrLpAP7aDHS8kDrbbOkoXLRS4j4
 UserId: 698c283848d62064b2fc5ed4
 Product Object:  [{"_id":"6960eae1c941646b7a8b3ed3","productName":"ADIDAS ORIGINAL","productCategory":"electronics","productSubCategory":"mobiles","productPrice":11500,"productDescription":"Apple phone","productImage":"https://rahulshettyacademy.com/api/ecom/uploads/productImage_1767959265156.jpg","productRating":"0","productTotalOrders":"0","productStatus":true,"productFor":"women","productAddedBy":"admin","__v":0},{"_id":"6960eac0c941646b7a8b3e68","productName":"ZARA COAT 3","productCategory":"electronics","productSubCategory":"mobiles","productPrice":11500,"productDescription":"Apple phone","productImage":"https://rahulshettyacademy.com/api/ecom/uploads/productImage_1767959232316.jpeg","productRating":"0","productTotalOrders":"0","productStatus":true,"productFor":"women","productAddedBy":"admin","__v":0},{"_id":"6960ea76c941646b7a8b3dd5","productName":"iphone 13 pro","productCategory":"electronics","productSubCategory":"mobiles","productPrice":55000,"productDescription":"Apple phone","productImage":"https://rahulshettyacademy.com/api/ecom/uploads/productImage_1767959158182.jpg","productRating":"0","productTotalOrders":"0","productStatus":true,"productFor":"women","productAddedBy":"admin","__v":0}]
 Status: 200
 Success Response: { message: 'Product Added To Cart' }
-[INFO] 2026-06-17T08:40:58.031Z - Initial Order Count: 0
+[INFO] 2026-06-18T08:24:13.076Z - Initial Order Count: 0
 Order Final Payload: {"orders":[{"country":"India","productOrderedId":"6960eae1c941646b7a8b3ed3"}]}
 Status: 201
 Success Response: {
-  orders: [ '6a325d9a17ee3e78bae6a848' ],
+  orders: [ '6a33ab2d17ee3e78bae9bdf1' ],
   productOrderId: [ '6960eae1c941646b7a8b3ed3' ],
   message: 'Order Placed Successfully'
 }
 Status: 200
 Order Success Response: {
   data: {
-    _id: '6a325d9a17ee3e78bae6a848',
+    _id: '6a33ab2d17ee3e78bae9bdf1',
     orderById: '698c283848d62064b2fc5ed4',
     orderBy: 'sr.yalluri@gmail.com',
     productOrderedId: '6960eae1c941646b7a8b3ed3',
@@ -32,8 +32,8 @@ Order Success Response: {
   },
   message: 'Orders fetched for customer Successfully'
 }
-[INFO] 2026-06-17T08:40:59.310Z - Order created by: sr.yalluri@gmail.com
+[INFO] 2026-06-18T08:24:14.300Z - Order created by: sr.yalluri@gmail.com
 Order Final Payload: {"orders":[{"country":"India","productOrderedId":"6960eae1c941646b7a8b3ed3"}]}
 Status: 200
 Order Success Response: { message: 'Orders Deleted Successfully' }
-[INFO] 2026-06-17T08:40:59.568Z - Order deleted successfully.
+[INFO] 2026-06-18T08:24:14.518Z - Order deleted successfully.
