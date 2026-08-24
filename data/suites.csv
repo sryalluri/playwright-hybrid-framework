@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","6493","Add product via API and validate in UI","chromium","2026-08-23","passed","2026-08-23","Hybrid - Add To Cart Flow","ui/login.spec.js","",""
+"","6404","Add product via API and validate in UI","chromium","2026-08-24","passed","2026-08-24","Hybrid - Add To Cart Flow","ui/login.spec.js","",""
